@@ -11,7 +11,7 @@ dayjs.extend(duration);
 dayjs.extend(relativetime);
 
 const formatStringToDate = (date) => dayjs(date).format('YYYY-MM-DDTHH:mm');
-const formatStringToDelimetrDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
+const formatStringToDelimiterDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const formatStringToShortDate = (date) => dayjs(date).format('MMM DD');
 const formatStringToTime = (date) => dayjs(date).format('HH:mm');
 const calcDuration = (dateFrom, dateTo) => {
@@ -63,9 +63,9 @@ const adaptToServer = (point) => {
   return adaptedPoint;
 };
 
-const isPointFuture = (point) => dayjs().isBefore(point.dateFrom);
-const isPointPresent = (point) => dayjs().isAfter(point.dateFrom) && dayjs().isBefore(point.dateTo);
-const isPointPast = (point) => dayjs().isAfter(point.dateTo);
+const isPointFuture = (point) => dayjs(point.dateFrom).isAfter(dayjs(), 'D');
+const isPointPresent = (point) => (dayjs(point.dateFrom).isBefore(dayjs(), 'D') || dayjs(point.dateFrom).isSame(dayjs(), 'D')) && (dayjs(point.dateTo).isAfter(dayjs(), 'D') || dayjs(point.dateTo).isSame(dayjs(), 'D'));
+const isPointPast = (point) => dayjs(point.dateTo).isBefore(dayjs(), 'D');
 const filter = {
   [FilterType.EVERYTHING]: (points) => [...points],
   [FilterType.FUTURE]: (points) => points.filter((point) => isPointFuture(point)),
@@ -112,7 +112,7 @@ export {
   formatStringToDate,
   formatStringToShortDate,
   formatStringToTime,
-  formatStringToDelimetrDate,
+  formatStringToDelimiterDate,
   toCapitalize,
   calcDuration,
   updateItem,
